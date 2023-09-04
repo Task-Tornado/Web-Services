@@ -1,8 +1,7 @@
-import { z } from "zod";
-
-import { desc, eq, schema } from "@acme/db";
-
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { desc, eq, schema } from "@task-tornado/db";
+
+import { z } from "zod";
 
 export const postRouter = createTRPCRouter({
   all: publicProcedure.query(({ ctx }) => {

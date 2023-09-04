@@ -1,7 +1,7 @@
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
+import { appRouter, createTRPCContext } from "@task-tornado/api";
 
-import { appRouter, createTRPCContext } from "@acme/api";
-import { auth } from "@acme/auth";
+import { auth } from "@task-tornado/auth";
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 
 export const runtime = "edge";
 

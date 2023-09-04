@@ -1,7 +1,6 @@
+import { CSRF_experimental } from "@task-tornado/auth";
 import type { ComponentProps } from "react";
-
-import type { OAuthProviders } from "@acme/auth";
-import { CSRF_experimental } from "@acme/auth";
+import type { OAuthProviders } from "@task-tornado/auth";
 
 export function SignIn({
   provider,
