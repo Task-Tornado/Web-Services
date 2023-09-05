@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-
 import "~/styles/globals.css";
 
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import { headers } from "next/headers";
 
+import DashboardLayout from "./_components/dashboard-layout";
 import { TRPCReactProvider } from "./providers";
 
 const fontSans = Inter({
@@ -13,18 +13,13 @@ const fontSans = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Create T3 Turbo",
-  description: "Simple monorepo with shared backend for web & mobile apps",
+  title: "Task Tornado",
+  description: "An AI powered task manager",
   openGraph: {
-    title: "Create T3 Turbo",
-    description: "Simple monorepo with shared backend for web & mobile apps",
-    url: "https://create-t3-turbo.vercel.app",
-    siteName: "Create T3 Turbo",
-  },
-  twitter: {
-    card: "summary_large_image",
-    site: "@jullerino",
-    creator: "@jullerino",
+    title: "Task Tornado",
+    description: "An AI powered task manager",
+    url: "http://localhost:3000",
+    siteName: "Task Tornado",
   },
 };
 
@@ -33,7 +28,7 @@ export default function Layout(props: { children: React.ReactNode }) {
     <html lang="en">
       <body className={["font-sans", fontSans.variable].join(" ")}>
         <TRPCReactProvider headers={headers()}>
-          {props.children}
+          <DashboardLayout>{props.children}</DashboardLayout>
         </TRPCReactProvider>
       </body>
     </html>
