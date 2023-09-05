@@ -81,3 +81,20 @@ export const verificationTokens = mySqlTable(
     compoundKey: primaryKey(vt.identifier, vt.token),
   }),
 );
+
+export const organizations = mySqlTable(
+  "organization",
+  {
+    id: varchar("id", { length: 255 }).notNull().primaryKey(),
+    name: varchar("name", { length: 255 }).notNull(),
+    slug: varchar("slug", { length: 255 }).notNull(),
+    image: varchar("image", { length: 255 }),
+  },
+  (org) => ({
+    slugIdx: index("slug_idx").on(org.slug),
+  }),
+);
+
+export const organizationsRelations = relations(organizations, ({ many }) => ({
+  users: many(users),
+}));
