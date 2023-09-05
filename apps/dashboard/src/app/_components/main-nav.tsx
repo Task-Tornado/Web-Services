@@ -1,40 +1,38 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { cn } from "~/utils";
+
+const navigation = [
+  { name: "Tasks", href: "/" },
+  { name: "Planner", href: "/planner" },
+  { name: "Activity", href: "/activity" },
+  { name: "Settings", href: "/settings" },
+];
 
 export function MainNav({
   className,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
+  const pathname = usePathname();
   return (
     <nav
       className={cn("flex items-center space-x-4 lg:space-x-6", className)}
       {...props}
     >
-      <Link
-        href="/tasks"
-        className="text-sm font-medium transition-colors hover:text-primary"
-      >
-        Tasks
-      </Link>
-      <Link
-        href="/examples/dashboard"
-        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-      >
-        Planner
-      </Link>
-      <Link
-        href="/examples/dashboard"
-        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-      >
-        Activity
-      </Link>
-      <Link
-        href="/examples/dashboard"
-        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-      >
-        Settings
-      </Link>
+      {navigation.map((item) => (
+        <Link
+          key={item.name}
+          href={item.href}
+          className={`text-sm font-medium transition-colors hover:text-primary ${
+            pathname === item.href ? "text-default" : "text-muted-foreground"
+          }`}
+        >
+          {item.name}
+        </Link>
+      ))}
     </nav>
   );
 }
