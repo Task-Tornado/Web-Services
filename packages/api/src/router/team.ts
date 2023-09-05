@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 import { desc, eq, schema } from "@task-tornado/db";
-import { mySqlTable } from "@task-tornado/db/schema/_table";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
@@ -17,6 +16,12 @@ export const teamRouter = createTRPCRouter({
         where: eq(schema.team.id, input.id),
       });
     }),
+
+  byUserId: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.query.team.findMany({
+      where: eq(schema.usersToTeams.userId, ctx.session.user.id),
+    });
+  }),
 
   create: protectedProcedure
     .input(
@@ -37,22 +42,15 @@ export const teamRouter = createTRPCRouter({
 
     .mutation(({ ctx, input }) => {
       return ctx.db.transaction(async (tx) => {
-        await tx.insert(schema.team).values({
+        const newTeam = await tx.insert(schema.team).values({
           name: input.name,
           plan: input.plan,
         });
-        const team = await tx.query.team.findFirst({
-          where: eq(schema.team.name, input.name),
+        await tx.insert(schema.usersToTeams).values({
+          teamId: newTeam.insertId as unknown as number,
+          userId: ctx.session.user.id,
+          role: "owner",
         });
-        if (team) {
-          await tx.insert(schema.usersToTeams).values({
-            teamId: team.id,
-            userId: ctx.session.user.id,
-            role: "owner",
-          });
-        } else {
-          throw new Error("Team not found");
-        }
       });
     }),
 

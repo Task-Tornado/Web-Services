@@ -48,7 +48,7 @@ export const usersToTeamsRelations = relations(usersToTeams, ({ one }) => ({
 }));
 
 export const team = mySqlTable("team", {
-  id: serial("id").primaryKey().unique(),
+  id: serial("id").primaryKey(),
   createdAt: timestamp("created_at")
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
