@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { headers } from "next/headers";
 
+import { ThemeProvider } from "~/components/theme-provider";
 import DashboardLayout from "./_components/dashboard-layout";
 import { TRPCReactProvider } from "./providers";
 
@@ -28,7 +29,9 @@ export default function Layout(props: { children: React.ReactNode }) {
     <html lang="en">
       <body className={["font-sans", fontSans.variable].join(" ")}>
         <TRPCReactProvider headers={headers()}>
-          <DashboardLayout>{props.children}</DashboardLayout>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <DashboardLayout>{props.children}</DashboardLayout>
+          </ThemeProvider>
         </TRPCReactProvider>
       </body>
     </html>
