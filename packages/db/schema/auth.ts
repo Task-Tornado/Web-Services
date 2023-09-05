@@ -4,6 +4,8 @@ import {
   index,
   int,
   primaryKey,
+  serial,
+  text,
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
@@ -23,6 +25,41 @@ export const users = mySqlTable("user", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
+  usersToTeams: many(usersToTeams),
+}));
+
+export const usersToTeams = mySqlTable(
+  "usersToTeams",
+  {
+    userId: varchar("userId", { length: 255 }).notNull(),
+    teamId: int("teamId").notNull(),
+    role: text("role", { enum: ["owner", "admin", "member"] }).notNull(),
+  },
+  (utt) => ({
+    compoundKey: primaryKey(utt.userId, utt.teamId),
+    userIdIdx: index("userId_idx").on(utt.userId),
+    teamIdIdx: index("teamId_idx").on(utt.teamId),
+  }),
+);
+
+export const usersToTeamsRelations = relations(usersToTeams, ({ one }) => ({
+  user: one(users, { fields: [usersToTeams.userId], references: [users.id] }),
+  team: one(team, { fields: [usersToTeams.teamId], references: [team.id] }),
+}));
+
+export const team = mySqlTable("team", {
+  id: serial("id").primaryKey().unique(),
+  createdAt: timestamp("created_at")
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updatedAt").onUpdateNow(),
+  name: varchar("name", { length: 255 }).notNull(),
+  image: varchar("image", { length: 255 }),
+  plan: text("plan", { enum: ["free", "pro", "advanced"] }).notNull(),
+});
+
+export const teamRelations = relations(team, ({ many }) => ({
+  usersToTeams: many(usersToTeams),
 }));
 
 export const accounts = mySqlTable(
@@ -81,20 +118,3 @@ export const verificationTokens = mySqlTable(
     compoundKey: primaryKey(vt.identifier, vt.token),
   }),
 );
-
-export const organizations = mySqlTable(
-  "organization",
-  {
-    id: varchar("id", { length: 255 }).notNull().primaryKey(),
-    name: varchar("name", { length: 255 }).notNull(),
-    slug: varchar("slug", { length: 255 }).notNull(),
-    image: varchar("image", { length: 255 }),
-  },
-  (org) => ({
-    slugIdx: index("slug_idx").on(org.slug),
-  }),
-);
-
-export const organizationsRelations = relations(organizations, ({ many }) => ({
-  users: many(users),
-}));
