@@ -1,9 +1,10 @@
-import { db, tableCreator } from "@task-tornado/db";
-
+import Google from "@auth/core/providers/google";
 import type { DefaultSession } from "@auth/core/types";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import Google from "@auth/core/providers/google";
 import NextAuth from "next-auth";
+
+import { db, tableCreator } from "@task-tornado/db";
+
 import { env } from "./env.mjs";
 
 export type { Session } from "next-auth";
@@ -42,17 +43,16 @@ export const {
     }),
 
     // @TODO - if you wanna have auth on the edge
-    // jwt: ({ token, profile }) => {
-    //   if (profile?.id) {
-    //     token.id = profile.id;
-    //     token.image = profile.picture;
-    //   }
-    //   return token;
-    // },
+    jwt: ({ token, profile }) => {
+      if (profile?.id) {
+        token.id = profile.id;
+        token.image = profile.picture;
+      }
+      return token;
+    },
 
-    // @TODO
-    // authorized({ request, auth }) {
-    //   return !!auth?.user
-    // }
+    authorized({ request, auth }) {
+      return !!auth?.user;
+    },
   },
 });
