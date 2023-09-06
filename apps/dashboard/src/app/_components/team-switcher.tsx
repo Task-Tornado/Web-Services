@@ -86,13 +86,16 @@ export function TeamSwitcher({ className }: TeamSwitcherProps) {
 
   const { mutateAsync: createTeam, error } = api.team.create.useMutation({
     async onSuccess() {
+      setShowNewTeamDialog(false);
       await context.team.all.invalidate();
+      await context.team.byUserId.invalidate();
       toast({
         title: "Team Successfully Created",
         description: "Your team has been created",
       });
     },
     onError() {
+      setShowNewTeamDialog(false);
       toast({
         title: "Team Creation Failed",
         description:
