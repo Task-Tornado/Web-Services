@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 
 import { ModeToggle } from "~/components/ui/theme-toggle";
 import { MainNav } from "./main-nav";
@@ -10,7 +10,9 @@ export default function DashboardLayout(props: { children: React.ReactNode }) {
   return (
     <div>
       <div className="flex h-16 items-center border-b px-4">
-        <TeamSwitcher />
+        <Suspense>
+          <TeamSwitcher />
+        </Suspense>
         <MainNav className="mx-6" />
         <div className="ml-auto flex items-center space-x-4">
           <Search />

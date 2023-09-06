@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   CaretSortIcon,
@@ -10,6 +9,8 @@ import {
 } from "@radix-ui/react-icons";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+
+import type { SelectTeam } from "@task-tornado/db/schema/auth";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
@@ -31,17 +32,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/ui/form";
+import { Form, FormField, FormItem, FormLabel } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
 import {
   Popover,
   PopoverContent,
@@ -56,7 +48,6 @@ import {
 } from "~/components/ui/select";
 import { toast } from "~/components/ui/use-toast";
 import { cn } from "~/utils";
-import type { RouterOutputs } from "~/utils/api";
 import { api } from "~/utils/api";
 
 const createTeamSchema = z.object({
@@ -74,24 +65,6 @@ const createTeamSchema = z.object({
     .default("free"),
 });
 
-const groups = [
-  {
-    label: "Teams",
-    teams: [
-      {
-        label: "Acme Inc.",
-        value: "acme-inc",
-      },
-      {
-        label: "Monsters Inc.",
-        value: "monsters",
-      },
-    ],
-  },
-];
-
-type Team = (typeof groups)[number]["teams"][number];
-
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
   typeof PopoverTrigger
 >;
@@ -106,8 +79,9 @@ export function TeamSwitcher({ className }: TeamSwitcherProps) {
 
   const [open, setOpen] = React.useState(false);
   const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
-  const [selectedTeam, setSelectedTeam] = React.useState<Team | null>(
-    groups[0]?.teams?.[0] ?? null,
+  const [teams] = api.team.byUserId.useSuspenseQuery();
+  const [selectedTeam, setSelectedTeam] = React.useState<SelectTeam | null>(
+    teams[0] ?? null,
   );
 
   const { mutateAsync: createTeam, error } = api.team.create.useMutation({
@@ -147,16 +121,16 @@ export function TeamSwitcher({ className }: TeamSwitcherProps) {
             className={cn("w-[200px] justify-between", className)}
           >
             <Avatar className="mr-2 h-5 w-5">
-              {selectedTeam && (
+              {selectedTeam?.image && (
                 <AvatarImage
-                  src={`https://avatar.vercel.sh/${selectedTeam.value}.png`}
-                  alt={selectedTeam.label}
+                  src={`https://avatar.vercel.sh/${selectedTeam.image}.png`}
+                  alt={selectedTeam.name}
                 />
               )}
 
               <AvatarFallback>?</AvatarFallback>
             </Avatar>
-            {selectedTeam?.label}
+            {selectedTeam?.name}
             <CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
@@ -165,38 +139,39 @@ export function TeamSwitcher({ className }: TeamSwitcherProps) {
             <CommandList>
               <CommandInput placeholder="Search team..." />
               <CommandEmpty>No team found.</CommandEmpty>
-              {groups.map((group) => (
-                <CommandGroup key={group.label} heading={group.label}>
-                  {group.teams.map((team) => (
-                    <CommandItem
-                      key={team.value}
-                      onSelect={() => {
-                        setSelectedTeam(team);
-                        setOpen(false);
-                      }}
-                      className="text-sm"
-                    >
-                      <Avatar className="mr-2 h-5 w-5">
+              <CommandGroup heading="Teams">
+                {teams.map((team: SelectTeam) => (
+                  <CommandItem
+                    key={team.name}
+                    onSelect={() => {
+                      setSelectedTeam(team);
+                      setOpen(false);
+                    }}
+                    className="text-sm"
+                  >
+                    <Avatar className="mr-2 h-5 w-5">
+                      {team.image && (
                         <AvatarImage
-                          src={`https://avatar.vercel.sh/${team.value}.png`}
-                          alt={team.label}
+                          src={`https://avatar.vercel.sh/${team.image}.png`}
+                          alt={team.name}
                           className="grayscale"
                         />
-                        <AvatarFallback>SC</AvatarFallback>
-                      </Avatar>
-                      {team.label}
-                      <CheckIcon
-                        className={cn(
-                          "ml-auto h-4 w-4",
-                          selectedTeam?.value === team.value
-                            ? "opacity-100"
-                            : "opacity-0",
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              ))}
+                      )}
+
+                      <AvatarFallback>?</AvatarFallback>
+                    </Avatar>
+                    {team.name}
+                    <CheckIcon
+                      className={cn(
+                        "ml-auto h-4 w-4",
+                        selectedTeam?.id === team.id
+                          ? "opacity-100"
+                          : "opacity-0",
+                      )}
+                    />
+                  </CommandItem>
+                ))}
+              </CommandGroup>
             </CommandList>
             <CommandSeparator />
             <CommandList>

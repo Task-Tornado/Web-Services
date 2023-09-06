@@ -9,6 +9,8 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import type { z } from "zod";
 
 import { mySqlTable } from "./_table";
 
@@ -118,3 +120,6 @@ export const verificationTokens = mySqlTable(
     compoundKey: primaryKey(vt.identifier, vt.token),
   }),
 );
+
+const selectTeamSchema = createSelectSchema(team);
+export type SelectTeam = z.infer<typeof selectTeamSchema>;

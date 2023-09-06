@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { desc, eq, schema } from "@task-tornado/db";
+import { asc, desc, eq, schema } from "@task-tornado/db";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
@@ -9,7 +9,7 @@ export const teamRouter = createTRPCRouter({
     return ctx.db.query.team.findMany({ orderBy: desc(schema.team.id) });
   }),
 
-  byId: publicProcedure
+  byId: protectedProcedure
     .input(z.object({ id: z.number() }))
     .query(({ ctx, input }) => {
       return ctx.db.query.team.findFirst({
@@ -19,7 +19,11 @@ export const teamRouter = createTRPCRouter({
 
   byUserId: protectedProcedure.query(({ ctx }) => {
     return ctx.db.query.team.findMany({
-      where: eq(schema.usersToTeams.userId, ctx.session.user.id),
+      with: {
+        usersToTeams: {
+          where: (userId, { eq }) => eq(userId.userId, ctx.session.user.id),
+        },
+      },
     });
   }),
 
