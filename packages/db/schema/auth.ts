@@ -98,15 +98,18 @@ export const sessions = mySqlTable(
       .notNull()
       .primaryKey(),
     userId: varchar("userId", { length: 255 }).notNull(),
+    currentTeamId: int("currentTeamId"),
     expires: timestamp("expires", { mode: "date" }).notNull(),
   },
   (session) => ({
     userIdIdx: index("userId_idx").on(session.userId),
+    currentTeamIdIdx: index("currentTeamId_idx").on(session.currentTeamId),
   }),
 );
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users),
+  currentTeam: one(team),
 }));
 
 export const verificationTokens = mySqlTable(
