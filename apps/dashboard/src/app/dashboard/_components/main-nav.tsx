@@ -6,10 +6,10 @@ import { usePathname } from "next/navigation";
 import { cn } from "~/utils";
 
 const navigation = [
-  { name: "Tasks", href: "/" },
-  { name: "Planner", href: "/planner" },
-  { name: "Activity", href: "/activity" },
-  { name: "Settings", href: "/settings" },
+  { name: "Tasks", href: "/dashboard" },
+  { name: "Planner", href: "/dashboard/planner" },
+  { name: "Activity", href: "/dashboard/activity" },
+  { name: "Settings", href: "/dashboard/settings" },
 ];
 
 export function MainNav({

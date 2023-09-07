@@ -9,7 +9,7 @@ import { UserNav } from "./user-nav";
 export default function DashboardLayout(props: { children: React.ReactNode }) {
   return (
     <div>
-      <div className="flex h-16 items-center border-b px-4">
+      <div className="flex h-16 items-center border-b bg-background px-4">
         <Suspense>
           <TeamSwitcher />
         </Suspense>
