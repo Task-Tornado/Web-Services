@@ -24,7 +24,13 @@ export const task = mySqlTable(
     updatedAt: timestamp("updatedAt").onUpdateNow(),
     name: varchar("name", { length: 255 }).notNull(),
     description: text("description"),
-    status: text("status", { enum: ["todo", "inProgress", "done"] }).notNull(),
+    status: text("status", {
+      enum: ["backlog", "todo", "in progress", "done", "cancelled"],
+    }),
+    label: text("label", { enum: ["feature", "bug", "documentation"] }),
+    priority: text("priority", {
+      enum: ["very low", "low", "medium", "high", "urgent"],
+    }),
   },
   (task) => ({
     nameIdx: index("name_idx").on(task.name),

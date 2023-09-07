@@ -1,3 +1,7 @@
-export default function TaskPage() {
-  return <main className="flex h-full items-center">test</main>;
+export default function Page() {
+  return (
+    <div>
+      <div>test</div>
+    </div>
+  );
 }

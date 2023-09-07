@@ -28,6 +28,7 @@
     "@tanstack/react-query": "^4.33.0",
     "@tanstack/react-query-devtools": "^4.33.0",
     "@tanstack/react-query-next-experimental": "5.0.0-alpha.80",
+    "@tanstack/react-table": "^8.9.7",
     "@task-tornado/api": "^0.1.0",
     "@task-tornado/auth": "^0.1.0",
     "@task-tornado/db": "^0.1.0",
