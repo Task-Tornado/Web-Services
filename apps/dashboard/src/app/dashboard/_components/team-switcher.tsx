@@ -7,7 +7,7 @@ import {
   CheckIcon,
   PlusCircledIcon,
 } from "@radix-ui/react-icons";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import * as z from "zod";
 
 import type { SelectTeam } from "@task-tornado/db/schema/auth";
@@ -84,6 +84,8 @@ export function TeamSwitcher({ className }: TeamSwitcherProps) {
     teams[0] ?? null,
   );
 
+  const { mutateAsync: updateTeam } = api.auth.updateSessionTeam.useMutation();
+
   const { mutateAsync: createTeam, error } = api.team.create.useMutation({
     async onSuccess() {
       setShowNewTeamDialog(false);
@@ -110,6 +112,12 @@ export function TeamSwitcher({ className }: TeamSwitcherProps) {
       name: data.name,
       plan: data.plan,
     });
+  }
+
+  async function handleTeamChange(team: SelectTeam) {
+    setSelectedTeam(team);
+    setOpen(false);
+    await updateTeam({ teamId: team.id });
   }
 
   return (
@@ -146,10 +154,11 @@ export function TeamSwitcher({ className }: TeamSwitcherProps) {
                 {teams.map((team: SelectTeam) => (
                   <CommandItem
                     key={team.name}
-                    onSelect={() => {
-                      setSelectedTeam(team);
-                      setOpen(false);
-                    }}
+                    onSelect={
+                      selectedTeam?.id !== team.id
+                        ? () => handleTeamChange(team)
+                        : undefined
+                    }
                     className="text-sm"
                   >
                     <Avatar className="mr-2 h-5 w-5">

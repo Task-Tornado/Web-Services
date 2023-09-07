@@ -54,5 +54,7 @@ export const {
     authorized({ request, auth }) {
       return !!auth?.user;
     },
+
+    // middleware that redirects to signin page if not logged in
   },
 });

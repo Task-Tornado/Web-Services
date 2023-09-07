@@ -1,5 +1,8 @@
+import { Suspense } from "react";
+
 import { auth } from "@task-tornado/auth";
 
+import { SignIn, SignOut } from "~/components/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import {
@@ -20,10 +23,12 @@ export async function UserNav() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            {session?.user.image && (
-              <AvatarImage src={session.user.image} alt="profile" />
-            )}
-            <AvatarFallback>?</AvatarFallback>
+            <Suspense>
+              {session.user.image && (
+                <AvatarImage src={session.user.image} alt="profile" />
+              )}
+              <AvatarFallback>?</AvatarFallback>
+            </Suspense>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -56,8 +61,10 @@ export async function UserNav() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          Log out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+          <SignOut>
+            Log out
+            <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+          </SignOut>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
