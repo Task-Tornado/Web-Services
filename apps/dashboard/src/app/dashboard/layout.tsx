@@ -9,7 +9,7 @@ import DashboardLayout from "./_components/dashboard-layout";
 export default async function Page(props: { children: React.ReactNode }) {
   const session = await auth();
   if (!session) {
-    redirect("/signin");
+    redirect("/api/auth/signin/google");
   }
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
