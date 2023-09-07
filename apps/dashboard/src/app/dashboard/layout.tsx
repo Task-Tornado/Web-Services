@@ -18,7 +18,7 @@ export default async function Page(props: { children: React.ReactNode }) {
   }
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <div className="flex h-16 items-center border-b bg-background px-4">
+      <div className="flex h-16 items-center border-b border-border bg-background px-4 ">
         <Suspense>
           <TeamSwitcher />
         </Suspense>

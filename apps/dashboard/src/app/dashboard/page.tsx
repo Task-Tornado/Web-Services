@@ -35,7 +35,7 @@ export default async function TaskPage() {
 
   return (
     <>
-      <div className=" h-full flex-1 flex-col space-y-8 p-8 ">
+      <div className="h-full min-h-[calc(100vh-64px)] flex-1 flex-col space-y-8 bg-accent/20 p-8 ">
         <div className="flex items-center justify-between space-y-2">
           <div>
             <h2 className="text-2xl font-bold tracking-tight">
