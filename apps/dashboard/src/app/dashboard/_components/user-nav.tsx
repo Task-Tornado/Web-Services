@@ -1,8 +1,9 @@
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 
 import { auth } from "@task-tornado/auth";
 
-import { SignIn, SignOut } from "~/components/auth";
+import SignOutDashboard, { SignIn, SignOut } from "~/components/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import {
@@ -60,12 +61,7 @@ export async function UserNav() {
           <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <SignOut>
-            Log out
-            <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-          </SignOut>
-        </DropdownMenuItem>
+        <SignOutDashboard />
       </DropdownMenuContent>
     </DropdownMenu>
   );
